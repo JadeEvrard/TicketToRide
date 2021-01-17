@@ -27,16 +27,15 @@
 #include "jeu.h"
 
 /* creates the game */
-void createGame(t_board* board,t_player* playerMe){
+void createGame(t_board* board,t_game* game,t_player* playerMe){
 	char* serverName = "li1417-56.members.linode.com";
 	unsigned int port = 1234;
 	playerMe->name = "Radé";
-	char gameName[20];
 
 	/* connection to server */
 	connectToServer(serverName,port,playerMe->name);
 	/* wait for a game */
-	waitForT2RGame("TRAINING DO_NOTHING timeout=10000 start=0 map=USA",gameName,&board->nbCities,&board->nbTracks);
+	waitForT2RGame("TRAINING NICE_BOT timeout=10000 start=0 map=USA",game->name,&board->nbCities,&board->nbTracks);
 	board->arrayTracks = malloc(5*board->nbTracks*sizeof(int));
 }
 
@@ -48,9 +47,12 @@ int createMap(t_board board, t_game* game, t_player* player){
 /* creates the players */
 void createPlayers(t_player* playerMe, t_player* playerOpponent){
 	playerMe->nbWagons = playerOpponent->nbWagons = 45;
-	playerMe->nbCards = playerOpponent->nbWagons = 4;
+	playerMe->nbCards = playerOpponent->nbCards = 4;
 	playerMe->nbObjectives = 0;
-	for(int i=0; i<=10; i++){
+	for(int i=0; i<10; i++){
+		playerMe->cards[i]=0;
+	}
+	for(int i=0; i<4; i++){
 		switch(playerMe->initialCards[i]){
 			case PURPLE:
 				playerMe->cards[PURPLE]++;
@@ -84,6 +86,6 @@ void createPlayers(t_player* playerMe, t_player* playerOpponent){
 }
 
 /* displays the board game */
-void displayGame(t_board board, t_game game, t_player player){
-	printf("NbCities :%d\nNbTracks :%d\n",board.nbCities,board.nbTracks);
+void displayGame(t_game game){
+	printf("NbCities :%d\nNbTracks :%d\n",game.board.nbCities,game.board.nbTracks);
 }

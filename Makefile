@@ -26,7 +26,7 @@ LIBS =
 LIBSDIR = 
 
 # fichiers du projet
-SRC = jeu.c move.c game.c clientAPI.c TicketToRideAPI.c
+SRC = jeu.c move.c game.c playAlone.c clientAPI.c TicketToRideAPI.c
 OBJ = $(SRC:.c=.o)
 EXEC = jeu.out
 
@@ -37,7 +37,10 @@ all: $(EXEC)
 # dépendance des .h
 clientAPI.o: clientAPI.h
 TicketToRideAPI.o: clientAPI.h TicketToRideAPI.h
-jeu.o: move.h game.h TicketToRideAPI.h
+move.o: move.h jeu.h TicketToRideAPI.h
+game.o: game.h jeu.h TicketToRideAPI.h
+playAlone.o: playAlone.h jeu.h TicketToRideAPI.h
+jeu.o: move.h jeu.h game.h playAlone.h TicketToRideAPI.h
 
 # règles de compilation
 %.o: %.c

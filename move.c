@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+#include "TicketToRideAPI.h"
 #include "move.h"
 
 /* plays the move choosen by the player */
@@ -35,6 +37,7 @@ t_return_code playOurMove(t_move* move, t_color* lastCard){
 			*lastCard = NONE;
 			break;
 	}
+	return ret;
 }
 
 /* asks to the player which move he would like to play */
@@ -76,4 +79,91 @@ int needReplay(t_move* move, t_color lastCard){
 		replay = 1;
 
 	return replay;
+}
+
+/* updates the game after a move from me */
+void updateMove(t_move move, t_track* tracks, t_game* game, int** G){
+	switch(move.type){
+		case CLAIM_ROUTE:
+			for(int i=0; i<game->board.nbTracks; i++){
+				if((move.claimRoute.city1==tracks[i].city1)&&(move.claimRoute.city2==tracks[i].city2)){
+					tracks[i].taken=0;
+					game->players[0].nbWagons=game->players[0].nbWagons-tracks[i].length;
+					game->players[0].nbCards=game->players[0].nbCards-tracks[i].length;
+					game->players[0].cards[move.claimRoute.color]=game->players[0].cards[move.claimRoute.color]-tracks[i].length+move.claimRoute.nbLocomotives;
+					game->players[0].cards[MULTICOLOR]=game->players[0].cards[MULTICOLOR]-move.claimRoute.nbLocomotives;
+					tracks[i].length=0;	
+					G[move.claimRoute.city1][move.claimRoute.city2]=0;
+					G[move.claimRoute.city2][move.claimRoute.city1]=0;
+				}
+			}
+			break;
+		case DRAW_CARD:
+			game->players[0].nbCards++;
+			game->players[0].cards[move.drawCard.card]++;
+			for(int i=0; i<5; i++){
+				game->faceUp[i] = move.drawCard.faceUp[i];
+			}
+			break;
+		case DRAW_BLIND_CARD:
+			game->players[0].nbCards++;
+			game->players[0].cards[move.drawBlindCard.card]++;
+			break;
+		case DRAW_OBJECTIVES:
+			for(int i=0; i<3; i++){
+				game->players[0].objectives[game->players[0].nbObjectives+i]=move.drawObjectives.objectives[i];
+			}
+			game->players[0].nbObjectives=game->players[0].nbObjectives+3;
+			break;
+		case CHOOSE_OBJECTIVES:
+			for(int i=game->players[0].nbObjectives-3; i<game->players[0].nbObjectives; i++){
+				if(move.chooseObjectives.chosen[i-game->players[0].nbObjectives+3]==0){
+					game->players[0].objectives[i].city1=0;
+					game->players[0].objectives[i].city2=0;
+					game->players[0].objectives[i].score=0;
+					for(int j=i; j<game->players[0].nbObjectives; j++){
+						game->players[0].objectives[j]=game->players[0].objectives[j+1];
+					}
+					game->players[0].nbObjectives--;
+				}
+			}
+			break;
+	}
+}
+
+/* updates the game after a move from the opponent */
+void updateOpponent(t_move move,t_track* tracks, t_game* game, int** G){
+	switch(move.type){
+		case CLAIM_ROUTE:
+			for(int i=0; i<game->board.nbTracks; i++){
+				if((move.claimRoute.city1==tracks[i].city1)&&(move.claimRoute.city2==tracks[i].city2)){
+					tracks[i].taken=INT_MAX;
+					game->players[1].nbWagons=game->players[1].nbWagons-tracks[i].length;
+					game->players[1].nbCards=game->players[1].nbCards-tracks[i].length;
+					tracks[i].length=INT_MAX;
+					G[move.claimRoute.city1][move.claimRoute.city2]=INT_MAX;
+					G[move.claimRoute.city2][move.claimRoute.city1]=INT_MAX;
+				}
+			}
+			break;
+		case DRAW_CARD:
+			game->players[1].nbCards++;
+			for(int i=0; i<5; i++){
+				game->faceUp[i] = move.drawCard.faceUp[i];
+			}
+			break;
+		case DRAW_BLIND_CARD:
+			game->players[1].nbCards++;
+			break;
+		case DRAW_OBJECTIVES:
+			game->players[1].nbObjectives=game->players[1].nbObjectives+3;
+			break;
+		case CHOOSE_OBJECTIVES:
+			for(int i=game->players[1].nbObjectives-3; i<game->players[1].nbObjectives; i++){
+				if(move.chooseObjectives.chosen[i-game->players[1].nbObjectives+3]==0){
+					game->players[1].nbObjectives--;
+				}
+			}
+			break;
+	}
 }

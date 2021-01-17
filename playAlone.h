@@ -19,24 +19,22 @@
 |                                                    |
 |                                                    |
 +----------------------------------------------------+
-File: game.h 
+File: playAlone.h 
 */
 
-#ifndef __T2R_TEST_GAME_H__
-#define __T2R_TEST_GAME_H__
+#ifndef __T2R_TEST_ALONE_H__
+#define __T2R_TEST_ALONE_H__
 #include "TicketToRideAPI.h"
 #include "jeu.h"
 
-/* creates the game */
-void createGame(t_board* board,t_game* game,t_player* playerMe);
+void shortTrack(int Prec[], int src, int dest, int** G, t_game game, t_track* tracks);
 
-/* creates the map */
-int createMap(t_board board, t_game* game, t_player* player);
+int distanceMini(int D[], int Visite[], int N);
 
-/* creates the players */
-void createPlayers(t_player* playerMe, t_player* playerOpponent);
+int nbTracksToDest(int src, int dest, int Prec[]);
 
-/* displays the board game */
-void displayGame(t_game game);
+void tabTracksToDest(int src, int dest, int Prec[], t_game game, t_track* tracks, t_track* tracksToDest);
+
+int playAlone(int fisrtPlay, int* previousReturn, t_move* move, t_move* lastMove, t_game game, int Prec[], int** G, t_track* tracks);
 
 #endif
