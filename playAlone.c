@@ -19,7 +19,7 @@ void shortTrack(int Prec[], int src, int dest, int** G, t_game game, t_track* tr
 
 	/* la distance de la src à la src est nulle */
 	D[src] = 0;
-	
+
 	while(u!=dest){
 		/* on cherche la ville non visitée la plus proche */
 		u = distanceMini(D, Visite, N);
@@ -219,9 +219,9 @@ int playAlone(int fisrtPlay, int* previousReturn, t_move* move, t_move* lastMove
 				shortTrack(Prec,currentSrc,currentDest,G,game,tracks);
 				N=nbTracksToDest(currentSrc,currentDest,Prec);
 				t_track tracksToDest[N];
-			
+
 				tabTracksToDest(currentSrc,currentDest,Prec,game,tracks,tracksToDest);
-				
+
 				/* on teste en priorité si l'on peut poser une route de couleur */
 				for(int k=0; k<N; k++){
 					if(tracksToDest[k].taken==1 && tracksToDest[k].color1!=MULTICOLOR && tracksToDest[k].color2!=MULTICOLOR){
@@ -327,7 +327,7 @@ int playAlone(int fisrtPlay, int* previousReturn, t_move* move, t_move* lastMove
 			}
 			else{
 				//j'ai fini mes objectifs et je repioche de nouveaux objectifs
-				if(game.players[0].nbWagons > 20 && game.players[1].nbWagons > 15){
+				if((game.players[0].nbWagons > 20 && game.players[1].nbWagons > 15)){
 					move->type=DRAW_OBJECTIVES;
 					lastMove->type=DRAW_OBJECTIVES;
 				}
@@ -410,4 +410,4 @@ int playAlone(int fisrtPlay, int* previousReturn, t_move* move, t_move* lastMove
 		previousReturn[0]=0;
 	}
 	return ret;
-}
+} 
