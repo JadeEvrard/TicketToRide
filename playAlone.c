@@ -335,7 +335,7 @@ int playAlone(int fisrtPlay, int* previousReturn, t_move* move, t_move* lastMove
 				else{
 					//j'essaie de placer des routes non occupées 
 					for(int i=0; i<game.board.nbTracks; i++){
-						if(tracks[i].length!=0 && tracks[i].length!=INT_MAX && tracks[i].color1!=MULTICOLOR && tracks[i].color2!=MULTICOLOR){
+						if(tracks[i].taken==1 && tracks[i].color1!=MULTICOLOR && tracks[i].color2!=MULTICOLOR){
 							if(game.players[0].cards[tracks[i].color1]+game.players[0].cards[MULTICOLOR] >= tracks[i].length){
 								if(game.players[0].cards[tracks[i].color1] >= tracks[i].length){
 									color=tracks[i].color1;
@@ -372,7 +372,7 @@ int playAlone(int fisrtPlay, int* previousReturn, t_move* move, t_move* lastMove
 
 					if(routePosee==0){
 						for(int i=0; i<game.board.nbTracks; i++){
-							if(tracks[i].length!=0 && tracks[i].length!=INT_MAX && tracks[i].color1==MULTICOLOR){
+							if(tracks[i].taken==1 && tracks[i].color1==MULTICOLOR){
 								for(int j=1; j<9; j++){
 									if(game.players[0].cards[j]+game.players[0].cards[MULTICOLOR] >= tracks[i].length){
 										if(game.players[0].cards[j] >= tracks[i].length){

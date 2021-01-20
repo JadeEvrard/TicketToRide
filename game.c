@@ -33,9 +33,9 @@ void createGame(t_board* board,t_game* game,t_player* playerMe){
 	playerMe->name = "Radé";
 
 	/* connection to server */
-	connectToServer(serverName,port,playerMe->name);
+	//connectToServer(serverName,port,playerMe->name);
 	/* wait for a game */
-	waitForT2RGame("TRAINING NICE_BOT timeout=10000 start=0 map=USA",game->name,&board->nbCities,&board->nbTracks);
+	waitForT2RGame("TRAINING NICE_BOT map=USA",game->name,&board->nbCities,&board->nbTracks);
 	board->arrayTracks = malloc(5*board->nbTracks*sizeof(int));
 }
 
